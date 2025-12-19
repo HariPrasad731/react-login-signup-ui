@@ -1,6 +1,13 @@
 import { useState } from "react";
 
-const InputField = ({ label, type = "text", name, value, onChange, error }) => (
+const InputField = ({
+  label,
+  type = "text",
+  name,
+  value,
+  onChange,
+  error,
+}) => (
   <div className="mb-4">
     <label className="block text-sm font-medium mb-1">{label}</label>
     <input
@@ -33,20 +40,31 @@ export default function AuthForm() {
   const validate = () => {
     let err = {};
 
-    if (!form.email) err.email = "Email is required";
-    else if (!/\\S+@\\S+\\.\\S+/.test(form.email))
-      err.email = "Invalid email format";
+    // ✅ FIXED EMAIL VALIDATION
+    const email = form.email.trim();
 
-    if (!form.password) err.password = "Password is required";
-    else if (form.password.length < 6)
+    if (!email) {
+      err.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      err.email = "Invalid email format";
+    }
+
+    if (!form.password) {
+      err.password = "Password is required";
+    } else if (form.password.length < 6) {
       err.password = "Minimum 6 characters required";
+    }
 
     if (!isLogin) {
-      if (!form.name) err.name = "Name is required";
-      if (!form.confirmPassword)
+      if (!form.name) {
+        err.name = "Name is required";
+      }
+
+      if (!form.confirmPassword) {
         err.confirmPassword = "Confirm your password";
-      else if (form.password !== form.confirmPassword)
+      } else if (form.password !== form.confirmPassword) {
         err.confirmPassword = "Passwords do not match";
+      }
     }
 
     setErrors(err);
@@ -57,7 +75,12 @@ export default function AuthForm() {
     e.preventDefault();
     if (validate()) {
       alert(`${isLogin ? "Login" : "Signup"} successful (frontend only)`);
-      setForm({ name: "", email: "", password: "", confirmPassword: "" });
+      setForm({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
     }
   };
 
@@ -118,6 +141,7 @@ export default function AuthForm() {
         <p className="text-center text-sm mt-4">
           {isLogin ? "Don’t have an account?" : "Already have an account?"}
           <button
+            type="button"
             onClick={() => {
               setIsLogin(!isLogin);
               setErrors({});
